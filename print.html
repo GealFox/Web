@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presupuesto</title>
+    <link rel="stylesheet" href="print.css">
+</head>
+<body>
+    <header>
+        <img src="logo-Ebenezer-nissi.png" alt="Logo Ebenezer" id="logo-ebenezer" style="width:250px;" crossOrigin="anonymous">
+        <h1>Presupuesto</h1>
+        <p>(documento no válido como factura)</p>
+    </header>
+    <main>
+        <section class="informacion-empresa">
+            <div class="nombre-empresa">
+                <h2>Ebenezer Nissi</h2>
+                <p>Accesorios para exaltar al Rey de Reyes.</p>
+            </div>
+            <div class="datos-empresa">
+                <p id="print-fecha">FECHA:</p>
+                <p>Art. de Librería</p>
+                <p>Regalería Cristiana</p>
+                <p>11-6118-1585</p>
+            </div>
+        </section>
+        <section class="informacion-cliente">
+            <p id="print-nombre">Apellido y Nombre:</p>
+            <p id="print-direccion">Dirección</p>
+            <p id="print-telefono">Tel:</p>
+        </section>
+        <section class="productos">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DESCRIPCIÓN</th>
+                        <th>CANT</th>
+                        <th>Precio Unitario</th>
+                        <th>MONTO</th>
+                    </tr>
+                </thead>
+                <tbody id="print-productos-tbody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total</td>
+                        <td id="print-total"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+        <div class="observaciones">
+            <label for="observaciones">Observaciones:</label>
+            <textarea id="observaciones" rows="4"></textarea>
+        </div>
+    </main>
+    <div class="btn-group">
+        <button type="button" class="btn" onclick="window.print()">Imprimir</button>
+        <button type="button" class="btn" id="descargarPDF">Descargar PDF</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="print.js"></script>
+</body>
+</html>
