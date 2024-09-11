@@ -2,6 +2,24 @@ window.onload = function() {
     let clienteData = JSON.parse(localStorage.getItem('clienteData'));
     let downloadCount = parseInt(localStorage.getItem('downloadCount')) || 0;
 
+    // Función para formatear números
+    function formatNumber(number, isInteger = false) {
+        // Verificar si el número es válido
+        if (isNaN(number)) {
+            console.error('Invalid number:', number);
+            return '0.00';
+        }
+
+        // Formato de número con punto como separador de miles y coma como separador decimal
+        const options = isInteger
+            ? { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+            : { minimumFractionDigits: 3, maximumFractionDigits: 3 };
+
+        // Usar Intl.NumberFormat con el locale 'es-ES' para formato en español
+        return new Intl.NumberFormat('es-ES', options).format(number).replace(/,/g, '.');
+    }
+
+    // Verificar si hay datos de cliente
     if (clienteData) {
         document.getElementById('print-fecha').innerHTML = 'FECHA: ' + clienteData.fecha;
         document.getElementById('print-nombre').innerHTML = 'Apellido y Nombre: ' + clienteData.nombre;
@@ -9,6 +27,7 @@ window.onload = function() {
         document.getElementById('print-telefono').innerHTML = 'Tel: ' + clienteData.telefono;
 
         let tableBody = document.getElementById('print-productos-tbody');
+        tableBody.innerHTML = ''; // Limpiar el tbody antes de agregar filas
         clienteData.productos.forEach(producto => {
             let row = document.createElement('tr');
 
@@ -18,9 +37,9 @@ window.onload = function() {
             let cell4 = document.createElement('td');
 
             cell1.innerHTML = producto.descripcion;
-            cell2.innerHTML = Number.isInteger(parseFloat(producto.cantidad)) ? parseInt(producto.cantidad) : parseFloat(producto.cantidad).toFixed(2);
-            cell3.innerHTML = Number.isInteger(parseFloat(producto.precio_unitario)) ? parseInt(producto.precio_unitario) : parseFloat(producto.precio_unitario).toFixed(2);
-            cell4.innerHTML = Number.isInteger(parseFloat(producto.total)) ? parseInt(producto.total) : parseFloat(producto.total).toFixed(2);
+            cell2.innerHTML = formatNumber(parseFloat(producto.cantidad), true); // Entero
+            cell3.innerHTML = formatNumber(parseFloat(producto.precio_unitario)); // Decimal
+            cell4.innerHTML = formatNumber(parseFloat(producto.total)); // Decimal
 
             row.appendChild(cell1);
             row.appendChild(cell2);
@@ -30,11 +49,13 @@ window.onload = function() {
             tableBody.appendChild(row);
         });
 
-        document.getElementById('print-total').innerHTML = Number.isInteger(parseFloat(clienteData.total)) ? parseInt(clienteData.total) : parseFloat(clienteData.total).toFixed(2);
+        document.getElementById('print-total').innerHTML = formatNumber(parseFloat(clienteData.total)); // Decimal
 
         if (clienteData.observaciones) {
             document.getElementById('observaciones').value = clienteData.observaciones;
         }
+    } else {
+        console.error('No client data found.');
     }
 
     document.getElementById('observaciones').addEventListener('input', function() {
