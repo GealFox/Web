@@ -6,6 +6,11 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
     let precio_unitario = parseFloat(document.getElementById('precio_unitario').value);
     let total = cantidad * precio_unitario;
 
+    // Formatear los valores antes de agregarlos a la tabla
+    let cantidadFormateada = formatearMonto(cantidad);
+    let precioUnitarioFormateado = formatearMonto(precio_unitario);
+    let totalFormateado = formatearMonto(total);
+
     let table = document.getElementById('boleta-table').getElementsByTagName('tbody')[0];
     let newRow = table.insertRow();
 
@@ -15,14 +20,25 @@ document.getElementById('product-form').addEventListener('submit', function(e) {
     let cell4 = newRow.insertCell(3);
 
     cell1.innerHTML = descripcion;
-    cell2.innerHTML = Number.isInteger(cantidad) ? cantidad : cantidad.toFixed(2);
-    cell3.innerHTML = Number.isInteger(precio_unitario) ? precio_unitario : precio_unitario.toFixed(2);
-    cell4.innerHTML = Number.isInteger(total) ? total : total.toFixed(2);
+    cell2.innerHTML = cantidadFormateada;
+    cell3.innerHTML = precioUnitarioFormateado;
+    cell4.innerHTML = totalFormateado;
 
     actualizarTotal();
     
     // Limpiar los campos de entrada después de agregar el producto
     document.getElementById('product-form').reset();
+
+    // Mostrar mensaje de confirmación
+    const mensaje = document.getElementById('mensaje');
+    if (mensaje) {
+        mensaje.style.display = 'block';
+
+        // Ocultar el mensaje después de 3 segundos
+        setTimeout(() => {
+            mensaje.style.display = 'none';
+        }, 3000);
+    }
 });
 
 function actualizarTotal() {
@@ -31,10 +47,10 @@ function actualizarTotal() {
     let total = 0;
 
     for (let i = 0; i < rows.length; i++) {
-        total += parseFloat(rows[i].getElementsByTagName('td')[3].innerHTML);
+        total += parseFloat(rows[i].getElementsByTagName('td')[3].innerHTML.replace(/\./g, '').replace(',', '.'));
     }
 
-    document.getElementById('total-boleta').innerHTML = Number.isInteger(total) ? total : total.toFixed(2);
+    document.getElementById('total-boleta').innerHTML = formatearMonto(total);
 }
 
 document.getElementById('generarPDF').addEventListener('click', function() {
@@ -70,4 +86,12 @@ function limpiarDatos() {
     document.getElementById('product-form').reset();
     document.getElementById('boleta-table').getElementsByTagName('tbody')[0].innerHTML = '';
     document.getElementById('total-boleta').innerHTML = '0';
+}
+
+// Función para formatear los montos en pesos argentinos sin decimales ni símbolos
+function formatearMonto(monto) {
+    return monto.toLocaleString('es-AR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).replace(/\./g, '.'); // Reemplaza puntos por puntos para separación de miles
 }
